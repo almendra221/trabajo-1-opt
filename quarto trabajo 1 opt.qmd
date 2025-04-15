@@ -1,5 +1,5 @@
 ---
-title: "trabajo opt R"
+title: "trabajooptR"
 author: "Almendra Jara e Ignacia Zabala"
 format: html
 bibliography: trabajo_1_opt.bib
@@ -144,7 +144,7 @@ ggsave("grafico 1.png", width = 22, height = 17, units = "cm", dpi = "retina")
 
 En base a los resultados obtenidos se puede apreciar en los gráficos que la mayoría de los encuestados se encuentran "nada interesados/as" en la política, lo que representa que existe un bajo interés en asuntos políticos en los diversos campos existentes. Luego podemos apreciar que la mayoría de las encuestadas son mujeres, por lo cual podemos suponer que son también más las mujeres que se encuentran nada interesadas en la política en comparación con los hombres.  
 
-Tal como se explican los posibles factores de este fenómeno en el texto de Burns. Et al, 2001, como se citó en García R. y Ito-Morales K. \[- \@kyokoito-moralesVoluntariedadGeneroInteres2017\]: 
+Tal como se explican los posibles factores de este fenómeno en el texto de Burns. Et al, 2001, como se citó en [@kyokoito-moralesVoluntariedadGeneroInteres2017 ] : 
 
 La falta de tiempo por cuidar a los niños además de trabajar, el cuidado de la familia que absorbe la capacidad física y mental para preocuparse de la política, la estructura tradicional patriarcal de familia que discrimina las funciones de las mujeres, la falta de recursos socioeconómicos o el proceso de socialización que hace que las mujeres tengan menos oportunidades en el ámbito político 
 
