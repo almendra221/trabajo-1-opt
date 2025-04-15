@@ -1,0 +1,153 @@
+---
+title: "trabajo opt R"
+author: "Almendra Jara e Ignacia Zabala"
+format: html
+bibliography: trabajo_1_opt.bib
+link-citations: true
+editor: visual
+---
+
+# Interes politico segun sexo
+
+## Introduccion
+
+En el presente trabajo, se realizará una investigación en base a la encuesta ELSOC 2018 - Ola 3 realizada en Chile. Se seleccionaron 2 variables que guían la investigación:
+
+-   m0_sexo (sexo del entrevistado, con nivel de medicion nominal)
+
+-   c13 (¿Qué tan interesado está usted en la política?, con nivel de medicion escalar ordinal)
+
+La problemática de investigación es acerca del interés político que tienen las personas en Chile en relación con su sexo, en conjunto con la problemática planteamos nuestra pregunta de investigación la cual es: ¿En qué grado se relaciona el interés político con el sexo de las personas? Para responder la pregunta se realizó un script en el programa R, creando una tabla de contingencia, descriptivos y un gráfico de barras.  
+
+Presentamos la siguiente hipótesis: “existe una relación entre sexo e interés en la política, presentando las mujeres un mayor grado de interés por la política que los hombres". 
+
+Consideramos relevante investigar este tema ya que, el interés político como principio fundamental de la democracia se ve afectado en relación con el sexo de la persona, es decir el interés de un hombre no va a ser el mismo que el de una mujer, esto puede deberse a un pasado en donde el rol de la mujer presentaba un nivel bajo de representatividad y acceso a la política a diferencia del hombre 
+
+Las mujeres en el hogar y los hombres en la plaza. "A cada quien su lugar", es una idea, pensada y dicha de una u otra manera, que a lo largo del tiempo ha concebido la naturaleza de la política y la distinta vinculación de los sexos con las actividades y fines de la esfera pública política [@alejandramassoloINTRODUCCIONPOLITICAMUJERES1994] 
+
+De esta misma manera se puede entender que la mujer se ha encontrado en desventaja con la dominación masculina en diversos aspectos sociales y políticos. 
+
+En efecto, la tradición del pensamiento patriarcal (androcéntrico) se ha impuesto en las formas de desarrollo social, como una cultura de acciones regresivas de derechos, de valores y estereotipos que han colocado a la mujer en una permanente desventaja. Desventaja entendida como una situación de subordinación, impidiendo que sea partícipe en los procesos de desarrollo, establecida por patrones culturales que han dado mayor significación y oportunidades al género masculino. [@brendavivianaguerrero-velaParticipacionPoliticaMujer2024] 
+
+Sin embargo, con los avances realizados para lograr una participación femenina más amplia del espacio público político, las mujeres han podido participar de diversas actividades que antes eran consideradas solo para ser realizadas por hombres, teniendo más oportunidades para poder liberarse de la dominación masculina. Por lo tanto, con estos avances acumulados en las últimas décadas, consideramos que es importante tener claridad sobre cómo ha cambiado el interés por la política en relación al sexo. 
+
+## Operacionalizacion
+
+```{r, echo=FALSE}
+
+pacman::p_load(tidyverse,
+               dplyr,       # nos permite seleccionar variables de un set de datos
+               haven,       # cargar y exportar bases de datos en formatos
+               sjmisc,      # explorar datos
+               sjPlot,      # para visualizar datos
+               car,
+               kableExtra,summarytools)
+```
+
+```{r}
+#cargar base de datos
+
+ELSOC_ola3 <- read_dta("~/GitHub/trabajo-1-opt/input/ELSOC_W03_v2.00_Stata14 (2).dta")
+
+#filtrar la base de datos con las variables seleccionadas
+ELSOC_ola3_rec <- select(ELSOC_ola3, c13, m0_sexo)
+summary(ELSOC_ola3_rec$m0_sexo)
+summary(ELSOC_ola3_rec$c13)
+```
+
+```{r}
+#asignar valores perdidos
+ELSOC_ola3_rec$c13 <- na_if(ELSOC_ola3_rec$c13, -999)
+ELSOC_ola3_rec$c13 <- na_if(ELSOC_ola3_rec$c13, -888)
+
+ELSOC_ola3_rec <- select(ELSOC_ola3_rec, m0_sexo, c13)
+
+```
+
+#### 1. tabla de descriptivos para variable sexo
+
+```{r}
+#tabla de descriptivos de sexo
+mean(ELSOC_ola3_rec$m0_sexo, na.rm = TRUE)
+
+sexo = descr(ELSOC_ola3_rec$m0_sexo, na.rm = TRUE)
+sexo_tabla <- kable(sexo, format = "html")
+sexo_tabla %>%
+  kable_styling()
+
+```
+
+### 
+
+#### 2. Tabla de descriptivos para variable interes politico
+
+```{r}
+#tabla de descriptivo deinteres en la politica
+mean(ELSOC_ola3_rec$c13, na.rm = TRUE)
+
+interes_politica = descr(ELSOC_ola3_rec$c13, na.rm = TRUE)
+interes_tabla <- kable(interes_politica, format = "html")
+interes_tabla %>%
+  kable_styling()
+```
+
+#### 3. Grafico de barras para interes en la politica
+
+```{r}
+ggplot(ELSOC_ola3_rec, aes(x = factor(c13))) +
+  geom_bar(width = 0.4, fill = rgb(0.1, 1, 0.5, 0.7)) +
+  scale_x_discrete(
+    name = "Grado de interés",
+    labels = c(
+      "1" = "1=Nada",
+      "2" = "2=Poco",
+      "3" = "3=Algo",
+      "4" = "4=Bastante",
+      "5" = "5=Mucho"
+    ),
+    na.translate = FALSE
+  ) +
+  scale_y_continuous("Frecuencia") +
+  labs(
+    title = "Frecuencia de interés en política",
+    subtitle = "Frecuencia absoluta de la variable c13"
+  )
+
+ggsave("grafico 1.png", width = 22, height = 17, units = "cm", dpi = "retina")
+
+```
+
+#### 4. Grafico de barras para sexo
+
+```{r}
+ggplot(ELSOC_ola3_rec, aes(x = factor(m0_sexo))) +
+  geom_bar(width = 0.4, fill = rgb(0.1, 1, 0.5, 0.7)) +
+  scale_x_discrete(
+    name = "Sexo",
+    labels = c(
+      "1" = "1=hombre",
+      "2" = "2=mujer"
+    ),
+    na.translate = FALSE
+  ) +
+  scale_y_continuous("Frecuencia") +
+  labs(
+    title = "Frecuencia de sexo",
+    subtitle = "Frecuencia absoluta de la variable m0_sexo"
+  )
+
+ggsave("grafico 1.png", width = 22, height = 17, units = "cm", dpi = "retina")
+
+```
+
+## Interpretacion de los resultados
+
+En base a los resultados obtenidos se puede apreciar en los gráficos que la mayoría de los encuestados se encuentran "nada interesados/as" en la política, lo que representa que existe un bajo interés en asuntos políticos en los diversos campos existentes. Luego podemos apreciar que la mayoría de las encuestadas son mujeres, por lo cual podemos suponer que son también más las mujeres que se encuentran nada interesadas en la política en comparación con los hombres.  
+
+Tal como se explican los posibles factores de este fenómeno en el texto de Burns. Et al, 2001, como se citó en García R. y Ito-Morales K. \[- \@kyokoito-moralesVoluntariedadGeneroInteres2017\]: 
+
+La falta de tiempo por cuidar a los niños además de trabajar, el cuidado de la familia que absorbe la capacidad física y mental para preocuparse de la política, la estructura tradicional patriarcal de familia que discrimina las funciones de las mujeres, la falta de recursos socioeconómicos o el proceso de socialización que hace que las mujeres tengan menos oportunidades en el ámbito político 
+
+la tabla de descriptivos para la variable c13 "interés en la política" nos muestra que la media es de 1.83, esto nos indica que la mayoría de los casos se encuentran entre la opción 1 y 2, es decir se encuentran entre nada interesado/a y poco interesado/a, mostrando un claro bajo interés. 
+
+En conclusión, de lo analizado, se aprecia como el interés en la política es altamente bajo correspondiente a la categoría de respuesta “nada interesado”, categoría en la cual participan encuestados tanto hombres como mujeres, en particular las mujeres son las más encuestadas en el estudio por ende se deduce que al tener más participación en la encuesta son también aquellas que presentan menos interés en la política, por lo tanto no se confirma la hipótesis ya que las mujeres no presentan un mayor interés en la política a comparación de los hombres. 
